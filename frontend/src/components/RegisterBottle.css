@@ -1,0 +1,35 @@
+.register-box {
+    margin-top: 3rem;
+    padding: 1rem;
+    border: 2px dashed #999;
+    border-radius: 8px;
+    width: 420px;
+    text-align: left;
+}
+
+.register-input {
+    padding: 0.5rem;
+    margin: 0.5rem;
+    width: 300px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.register-button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 0.5rem;
+}
+
+.register-success {
+    color: green;
+    font-weight: bold;
+    margin-top: 1rem;
+}
+
+.register-error {
+    color: red;
+    margin-top: -0.5rem;
+}

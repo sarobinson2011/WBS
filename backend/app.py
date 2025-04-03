@@ -5,7 +5,8 @@ import os
 from datetime import datetime, timezone
 
 app = Flask(__name__)
-CORS(app) 
+CORS(app, resources={r"/*": {"origins": "*"}})  # allow all origins i.e. localhost number doesn't matter
+ 
 LOG_FILE = 'logs/bottle_log.jsonl'  # .jsonl = JSON Lines format
 
 @app.route('/log', methods=['POST'])

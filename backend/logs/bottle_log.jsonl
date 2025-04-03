@@ -2,3 +2,4 @@
 {"action": "transfer", "rfid": "00000000000000A", "user": "0xF8f8269488f73fab3935555FCDdD6035699deE25", "timestamp": "2025-03-28T16:04:51.632502+00:00"}
 {"action": "redeem", "rfid": "00000000000000B", "user": "0xF8f8269488f73fab3935555FCDdD6035699deE25", "timestamp": "2025-03-28T16:29:45.023605+00:00"}
 {"action": "transfer", "rfid": "00000000000000A", "user": "0xC26741bac14a3Ba52517D6fD825eF4513454178E", "newOwner": "0xf8f8269488f73fab3935555fcddd6035699dee25", "timestamp": "2025-03-28T16:32:55.483895+00:00"}
+{"action": "register", "rfid": "00000000000000D", "user": "0xF8f8269488f73fab3935555FCDdD6035699deE25", "newOwner": "0xf8f8269488f73fab3935555fcddd6035699dee25", "tokenURI": "ipfs://QmVUtkyKPHZa6qSvTGNYotUMfPU56VRg1hzqFuUn9ZuLFH", "timestamp": "2025-04-03T13:46:10.067482+00:00"}

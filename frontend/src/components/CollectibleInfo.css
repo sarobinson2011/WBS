@@ -1,4 +1,4 @@
-.bottle-info-box {
+.Collectible-info-box {
     margin-top: 2rem;
     padding: 1rem;
     border: 1px solid #ccc;
@@ -7,10 +7,10 @@
     text-align: left;
 }
 
-.bottle-info-owner-yes {
+.Collectible-info-owner-yes {
     color: green;
 }
 
-.bottle-info-owner-no {
+.Collectible-info-owner-no {
     color: red;
 }

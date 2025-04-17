@@ -10,7 +10,7 @@
             {
                 "indexed": false,
                 "internalType": "string",
-                "name": "_rfid",
+                "name": "rfid",
                 "type": "string"
             },
             {
@@ -22,11 +22,11 @@
             {
                 "indexed": false,
                 "internalType": "address",
-                "name": "_newOwner",
+                "name": "newOwner",
                 "type": "address"
             }
         ],
-        "name": "BottleOwnershipTransferred",
+        "name": "CollectibleOwnershipTransferred",
         "type": "event"
     },
     {
@@ -35,11 +35,11 @@
             {
                 "indexed": false,
                 "internalType": "string",
-                "name": "_rfid",
+                "name": "rfid",
                 "type": "string"
             }
         ],
-        "name": "BottleRedeemed",
+        "name": "CollectibleRedeemed",
         "type": "event"
     },
     {
@@ -48,48 +48,80 @@
             {
                 "indexed": false,
                 "internalType": "string",
-                "name": "_rfid",
-                "type": "string"
-            },
-            {
-                "indexed": false,
-                "internalType": "bytes32",
-                "name": "_authentictyHash",
-                "type": "bytes32"
-            },
-            {
-                "indexed": false,
-                "internalType": "address",
-                "name": "_bottleOwner",
-                "type": "address"
-            }
-        ],
-        "name": "BottleRegistered",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": false,
-                "internalType": "string",
-                "name": "_rfid",
+                "name": "rfid",
                 "type": "string"
             },
             {
                 "indexed": false,
                 "internalType": "bytes32",
-                "name": "_authentictyHash",
+                "name": "authenticityHash",
                 "type": "bytes32"
             },
             {
                 "indexed": false,
                 "internalType": "address",
-                "name": "_bottleOwner",
+                "name": "collectibleOwner",
                 "type": "address"
             }
         ],
-        "name": "GetBottleDetails",
+        "name": "CollectibleRegistered",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "string",
+                "name": "rfid",
+                "type": "string"
+            },
+            {
+                "indexed": false,
+                "internalType": "bytes32",
+                "name": "authenticityHash",
+                "type": "bytes32"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "collectibleOwner",
+                "type": "address"
+            }
+        ],
+        "name": "GetCollectibleDetails",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "uint8",
+                "name": "version",
+                "type": "uint8"
+            }
+        ],
+        "name": "Initialized",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "previousOwner",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "newOwner",
+                "type": "address"
+            }
+        ],
+        "name": "OwnershipTransferred",
         "type": "event"
     },
     {
@@ -106,19 +138,6 @@
         "type": "function"
     },
     {
-        "inputs": [],
-        "name": "admin",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
         "inputs": [
             {
                 "internalType": "string",
@@ -126,7 +145,7 @@
                 "type": "string"
             }
         ],
-        "name": "bottles",
+        "name": "collectibles",
         "outputs": [
             {
                 "internalType": "string",
@@ -140,7 +159,7 @@
             },
             {
                 "internalType": "address",
-                "name": "bottleOwner",
+                "name": "collectibleOwner",
                 "type": "address"
             },
             {
@@ -156,11 +175,11 @@
         "inputs": [
             {
                 "internalType": "string",
-                "name": "_rfid",
+                "name": "rfid",
                 "type": "string"
             }
         ],
-        "name": "getBottle",
+        "name": "getCollectible",
         "outputs": [
             {
                 "internalType": "string",
@@ -182,14 +201,34 @@
         "type": "function"
     },
     {
+        "inputs": [],
+        "name": "initialize",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "owner",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
         "inputs": [
             {
                 "internalType": "string",
-                "name": "_rfid",
+                "name": "rfid",
                 "type": "string"
             }
         ],
-        "name": "redeemBottle",
+        "name": "redeemCollectible",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -198,26 +237,33 @@
         "inputs": [
             {
                 "internalType": "string",
-                "name": "_rfid",
+                "name": "rfid",
                 "type": "string"
             },
             {
                 "internalType": "bytes32",
-                "name": "_authentictyHash",
+                "name": "authenticityHash",
                 "type": "bytes32"
             },
             {
                 "internalType": "address",
-                "name": "_bottleOwner",
+                "name": "collectibleOwner",
                 "type": "address"
             },
             {
                 "internalType": "string",
-                "name": "_tokenURI",
+                "name": "tokenURI",
                 "type": "string"
             }
         ],
-        "name": "registerBottle",
+        "name": "registerCollectible",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "renounceOwnership",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -226,7 +272,7 @@
         "inputs": [
             {
                 "internalType": "address",
-                "name": "_NFTcontract",
+                "name": "_NFTContract",
                 "type": "address"
             }
         ],
@@ -239,16 +285,29 @@
         "inputs": [
             {
                 "internalType": "string",
-                "name": "_rfid",
+                "name": "rfid",
                 "type": "string"
             },
             {
                 "internalType": "address",
-                "name": "_newOwner",
+                "name": "newOwner",
                 "type": "address"
             }
         ],
-        "name": "transferBottleOwnership",
+        "name": "transferCollectibleOwnership",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "newOwner",
+                "type": "address"
+            }
+        ],
+        "name": "transferOwnership",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"

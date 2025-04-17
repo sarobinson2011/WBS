@@ -1,7 +1,7 @@
 import React from 'react';
-import './BottleActions.css';
+import './CollectibleActions.css';
 
-const BottleActions = ({
+const CollectibleActions = ({
     rfid,
     newOwner,
     setRfid,
@@ -17,15 +17,15 @@ const BottleActions = ({
     const isBusy = transferLoading || redeemLoading;
 
     return (
-        <div className="bottle-actions-container">
-            <h3>Bottle Actions</h3>
+        <div className="Collectible-actions-container">
+            <h3>Collectible Actions</h3>
 
             <input
                 type="text"
-                placeholder="Bottle RFID"
+                placeholder="Collectible RFID"
                 value={rfid}
                 onChange={(e) => setRfid(e.target.value)}
-                className="bottle-actions-input"
+                className="Collectible-actions-input"
                 disabled={isBusy}
             />
 
@@ -34,12 +34,12 @@ const BottleActions = ({
                 placeholder="New Owner Address"
                 value={newOwner}
                 onChange={(e) => setNewOwner(e.target.value)}
-                className="bottle-actions-input"
+                className="Collectible-actions-input"
                 disabled={isBusy}
             />
 
             <button
-                className="bottle-actions-button"
+                className="Collectible-actions-button"
                 onClick={onTransfer}
                 disabled={isBusy}
             >
@@ -47,30 +47,30 @@ const BottleActions = ({
             </button>
 
             <button
-                className="bottle-actions-button"
+                className="Collectible-actions-button"
                 onClick={onCheck}
                 disabled={isBusy}
             >
-                Check Bottle
+                Check Collectible
             </button>
 
             <button
-                className="bottle-actions-button"
+                className="Collectible-actions-button"
                 onClick={onRedeem}
                 disabled={isBusy}
             >
-                {redeemLoading ? 'Redeeming...' : 'Redeem Bottle'}
+                {redeemLoading ? 'Redeeming...' : 'Redeem Collectible'}
             </button>
 
             {transferMessage && (
-                <p className="bottle-actions-success">{transferMessage}</p>
+                <p className="Collectible-actions-success">{transferMessage}</p>
             )}
 
             {redeemMessage && (
-                <p className="bottle-actions-success">{redeemMessage}</p>
+                <p className="Collectible-actions-success">{redeemMessage}</p>
             )}
         </div>
     );
 };
 
-export default BottleActions;
+export default CollectibleActions;

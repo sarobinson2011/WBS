@@ -5,15 +5,14 @@ import './App.css';
 // Components
 import Header from './components/Header';
 import ConnectWalletButton from './components/ConnectWalletButton';
-import BottleActions from './components/BottleActions';
-import BottleInfo from './components/BottleInfo';
-import RegisterBottle from './components/RegisterBottle';
+import CollectibleActions from './components/CollectibleActions';
+import CollectibleInfo from './components/CollectibleInfo';
+import RegisterCollectible from './components/RegisterCollectible';
 
 // ABIs
-import contractABI from './contracts/BottleRegistry.json';
-import nftABI from './contracts/BottleNFT.json';
+import contractABI from './contracts/CollectibleRegistry.json';
+import nftABI from './contracts/CollectibleNFT.json';
 
-// 🔐 `Valid`ation helpers
 const isValidRFID = (value) => /^[0-9a-fA-F]{15}$/.test(value);
 const isValidEthereumAddress = (addr) => /^0x[a-fA-F0-9]{40}$/.test(addr);
 const isValidIPFSUri = (uri) => /^ipfs:\/\/[a-zA-Z0-9]{46,}$/.test(uri);
@@ -21,17 +20,14 @@ const isValidIPFSUri = (uri) => /^ipfs:\/\/[a-zA-Z0-9]{46,}$/.test(uri);
 function App() {
   const [walletAddress, setWalletAddress] = useState(null);
   const [adminAddress, setAdminAddress] = useState(null);
-
-  // Transfer state
   const [rfid, setRfid] = useState('');
   const [newOwner, setNewOwner] = useState('');
   const [transferMessage, setTransferMessage] = useState('');
   const [transferLoading, setTransferLoading] = useState(false);
   const [redeemMessage, setRedeemMessage] = useState('');
   const [redeemLoading, setRedeemLoading] = useState(false);
-  const [bottleInfo, setBottleInfo] = useState(null);
+  const [collectibleInfo, setCollectibleInfo] = useState(null);
 
-  // Register state
   const [registerRFID, setRegisterRFID] = useState('');
   const [registerOwner, setRegisterOwner] = useState('');
   const [registerAuthHash, setRegisterAuthHash] = useState('');
@@ -54,11 +50,12 @@ function App() {
         setWalletAddress(accounts[0]);
 
         const contract = new ethers.Contract(
-          process.env.REACT_APP_BOTTLE_REGISTRY_ADDRESS,
+          process.env.REACT_APP_COLLECTIBLE_REGISTRY_ADDRESS,
           contractABI,
           provider
         );
-        const admin = await contract.admin();
+
+        const admin = await contract.owner();
         setAdminAddress(admin);
 
         console.log("Connected wallet:", accounts[0]);
@@ -70,36 +67,30 @@ function App() {
     }
   };
 
-  const logBottleAction = async (action, rfid, userAddress, details = {}) => {
+  const logCollectibleAction = async (action, rfid, userAddress, details = {}) => {
     try {
       await fetch('http://localhost:5000/log', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action,
-          rfid,
-          user: userAddress,
-          ...details
-        }),
+        body: JSON.stringify({ action, rfid, user: userAddress, ...details }),
       });
     } catch (err) {
       console.error("Logging failed:", err);
     }
   };
 
-  const getBottleOwner = async (rfid) => {
+  const getCollectibleOwner = async (rfid) => {
     try {
       const provider = new ethers.BrowserProvider(window.ethereum);
       const contract = new ethers.Contract(
-        process.env.REACT_APP_BOTTLE_REGISTRY_ADDRESS,
+        process.env.REACT_APP_COLLECTIBLE_REGISTRY_ADDRESS,
         contractABI,
         provider
       );
-      const [, , owner] = await contract.getBottle(rfid);
+      const [, , owner] = await contract.getCollectible(rfid);
       return owner;
     } catch (err) {
-      console.error("Error fetching bottle owner:", err);
-      return null;
+      return null; // if not found, treat as unregistered
     }
   };
 
@@ -118,19 +109,19 @@ function App() {
       const userAddress = await signer.getAddress();
 
       const registry = new ethers.Contract(
-        process.env.REACT_APP_BOTTLE_REGISTRY_ADDRESS,
+        process.env.REACT_APP_COLLECTIBLE_REGISTRY_ADDRESS,
         contractABI,
         signer
       );
       const nftContract = new ethers.Contract(
-        process.env.REACT_APP_BOTTLE_NFT_ADDRESS,
+        process.env.REACT_APP_COLLECTIBLE_NFT_ADDRESS,
         nftABI,
         signer
       );
 
-      const bottleOwner = await getBottleOwner(rfid);
-      if (!bottleOwner || bottleOwner.toLowerCase() !== userAddress.toLowerCase()) {
-        alert("You are not the current bottle owner.");
+      const collectibleOwner = await getCollectibleOwner(rfid);
+      if (!collectibleOwner || collectibleOwner.toLowerCase() !== userAddress.toLowerCase()) {
+        alert("You are not the current collectible owner.");
         return;
       }
 
@@ -140,10 +131,10 @@ function App() {
         await approvalTx.wait();
       }
 
-      const tx = await registry.transferBottleOwnership(rfid, newOwner);
+      const tx = await registry.transferCollectibleOwnership(rfid, newOwner);
       await tx.wait();
 
-      await logBottleAction("transfer", rfid, userAddress, { newOwner });
+      await logCollectibleAction("transfer", rfid, userAddress, { newOwner });
       setTransferMessage("✅ Ownership transferred successfully.");
     } catch (err) {
       console.error("Transfer failed:", err);
@@ -153,7 +144,7 @@ function App() {
     }
   };
 
-  const handleCheckBottle = async () => {
+  const handleCheckCollectible = async () => {
     if (!rfid) {
       alert("Please enter an RFID.");
       return;
@@ -162,22 +153,22 @@ function App() {
     try {
       const provider = new ethers.BrowserProvider(window.ethereum);
       const contract = new ethers.Contract(
-        process.env.REACT_APP_BOTTLE_REGISTRY_ADDRESS,
+        process.env.REACT_APP_COLLECTIBLE_REGISTRY_ADDRESS,
         contractABI,
         provider
       );
-      const [returnedRfid, authenticityHash, owner] = await contract.getBottle(rfid);
-      setBottleInfo({ rfid: returnedRfid, hash: authenticityHash, owner });
+      const [returnedRfid, authenticityHash, owner] = await contract.getCollectible(rfid);
+      setCollectibleInfo({ rfid: returnedRfid, hash: authenticityHash, owner });
     } catch (err) {
-      console.error("Error fetching bottle:", err);
-      setBottleInfo(null);
-      alert("Could not fetch bottle. Make sure the RFID is valid.");
+      console.error("Error fetching collectible:", err);
+      setCollectibleInfo(null);
+      alert("Could not fetch collectible. Make sure the RFID is valid.");
     }
   };
 
-  const handleRedeemBottle = async () => {
+  const handleRedeemCollectible = async () => {
     if (!rfid) {
-      alert("Please enter the RFID of the bottle to redeem.");
+      alert("Please enter the RFID of the collectible to redeem.");
       return;
     }
 
@@ -190,18 +181,18 @@ function App() {
       const userAddress = await signer.getAddress();
 
       const contract = new ethers.Contract(
-        process.env.REACT_APP_BOTTLE_REGISTRY_ADDRESS,
+        process.env.REACT_APP_COLLECTIBLE_REGISTRY_ADDRESS,
         contractABI,
         signer
       );
 
-      const tx = await contract.redeemBottle(rfid);
+      const tx = await contract.redeemCollectible(rfid);
       await tx.wait();
 
-      await logBottleAction("redeem", rfid, userAddress);
-      setRedeemMessage("✅ Bottle redeemed and NFT burned successfully.");
+      await logCollectibleAction("redeem", rfid, userAddress);
+      setRedeemMessage("✅ Collectible redeemed and NFT burned successfully.");
       setRfid('');
-      setBottleInfo(null);
+      setCollectibleInfo(null);
     } catch (err) {
       console.error("Redemption failed:", err);
       setRedeemMessage("❌ Redemption failed. See console for details.");
@@ -210,7 +201,7 @@ function App() {
     }
   };
 
-  const handleRegisterBottle = async () => {
+  const handleRegisterCollectible = async () => {
     if (!isValidRFID(registerRFID)) {
       alert("❌ Invalid RFID. Must be 15 hex characters.");
       return;
@@ -231,6 +222,13 @@ function App() {
       return;
     }
 
+    // ✅ Check if RFID already registered
+    const existingOwner = await getCollectibleOwner(registerRFID);
+    if (existingOwner) {
+      alert("❌ RFID already registered on-chain.");
+      return;
+    }
+
     setRegisterMessage('');
 
     try {
@@ -239,12 +237,12 @@ function App() {
       const userAddress = await signer.getAddress();
 
       const contract = new ethers.Contract(
-        process.env.REACT_APP_BOTTLE_REGISTRY_ADDRESS,
+        process.env.REACT_APP_COLLECTIBLE_REGISTRY_ADDRESS,
         contractABI,
         signer
       );
 
-      const tx = await contract.registerBottle(
+      const tx = await contract.registerCollectible(
         registerRFID,
         registerAuthHash,
         registerOwner,
@@ -252,54 +250,45 @@ function App() {
       );
       await tx.wait();
 
-      await logBottleAction("register", registerRFID, userAddress, {
+      await logCollectibleAction("register", registerRFID, userAddress, {
         newOwner: registerOwner,
-        tokenURI: registerTokenURI
+        tokenURI: registerTokenURI,
+        authenticityHash: registerAuthHash
       });
 
-      setRegisterMessage("✅ Bottle registered successfully.");
+      setRegisterMessage("✅ Collectible registered successfully.");
       setRegisterRFID('');
       setRegisterAuthHash('');
       setRegisterOwner('');
       setRegisterTokenURI('');
     } catch (err) {
       console.error("Registration failed:", err);
-      setRegisterMessage("❌ Failed to register bottle.");
+      setRegisterMessage("❌ Failed to register collectible.");
     }
   };
 
   return (
     <div className="App">
       <Header />
-
       <main style={styles.main}>
-        <ConnectWalletButton
-          walletAddress={walletAddress}
-          onConnect={connectWallet}
-        />
-
-        <BottleActions
+        <ConnectWalletButton walletAddress={walletAddress} onConnect={connectWallet} />
+        <CollectibleActions
           rfid={rfid}
           setRfid={setRfid}
           newOwner={newOwner}
           setNewOwner={setNewOwner}
           onTransfer={handleTransferOwnership}
-          onCheck={handleCheckBottle}
-          onRedeem={handleRedeemBottle}
+          onCheck={handleCheckCollectible}
+          onRedeem={handleRedeemCollectible}
           transferMessage={transferMessage}
           transferLoading={transferLoading}
           redeemMessage={redeemMessage}
           redeemLoading={redeemLoading}
         />
-
-        <BottleInfo
-          bottleInfo={bottleInfo}
-          walletAddress={walletAddress}
-        />
-
+        <CollectibleInfo collectibleInfo={collectibleInfo} walletAddress={walletAddress} />
         {walletAddress && adminAddress &&
           walletAddress.toLowerCase() === adminAddress.toLowerCase() && (
-            <RegisterBottle
+            <RegisterCollectible
               registerRFID={registerRFID}
               setRegisterRFID={setRegisterRFID}
               registerAuthHash={registerAuthHash}
@@ -308,7 +297,7 @@ function App() {
               setRegisterOwner={setRegisterOwner}
               registerTokenURI={registerTokenURI}
               setRegisterTokenURI={setRegisterTokenURI}
-              handleRegisterBottle={handleRegisterBottle}
+              handleRegisterCollectible={handleRegisterCollectible}
               isValidRFID={isValidRFID}
               isValidEthereumAddress={isValidEthereumAddress}
               isValidIPFSUri={isValidIPFSUri}

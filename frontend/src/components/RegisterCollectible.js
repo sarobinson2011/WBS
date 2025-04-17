@@ -1,7 +1,8 @@
-import React from 'react';
-import './RegisterBottle.css';
+// src/components/RegisterCollectible.js
+import React, { useEffect } from 'react';
+import './RegisterCollectible.css';
 
-const RegisterBottle = ({
+const RegisterCollectible = ({
     registerRFID,
     setRegisterRFID,
     registerAuthHash,
@@ -10,19 +11,23 @@ const RegisterBottle = ({
     setRegisterOwner,
     registerTokenURI,
     setRegisterTokenURI,
-    handleRegisterBottle,
+    handleRegisterCollectible,
     isValidRFID,
     isValidEthereumAddress,
     isValidIPFSUri,
     registerMessage
 }) => {
+    useEffect(() => {
+        console.log("✅ RegisterCollectible component rendered");
+    }, []);
+
     return (
         <div className="register-box">
-            <h3>Register New Bottle</h3>
+            <h3>Register New Collectible</h3>
 
             <input
                 type="text"
-                placeholder="Bottle RFID"
+                placeholder="Collectible RFID"
                 value={registerRFID}
                 onChange={(e) => setRegisterRFID(e.target.value)}
                 className="register-input"
@@ -43,7 +48,7 @@ const RegisterBottle = ({
 
             <input
                 type="text"
-                placeholder="Bottle Owner Address"
+                placeholder="Collectible Owner Address"
                 value={registerOwner}
                 onChange={(e) => setRegisterOwner(e.target.value)}
                 className="register-input"
@@ -67,8 +72,8 @@ const RegisterBottle = ({
                 </p>
             )}
 
-            <button className="register-button" onClick={handleRegisterBottle}>
-                Register Bottle
+            <button className="register-button" onClick={handleRegisterCollectible}>
+                Register Collectible
             </button>
 
             {registerMessage && (
@@ -78,4 +83,4 @@ const RegisterBottle = ({
     );
 };
 
-export default RegisterBottle;
+export default RegisterCollectible;

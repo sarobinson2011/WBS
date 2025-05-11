@@ -1,20 +1,12 @@
-# High level system overview
+# React + Vite
 
-Split into phases per systemn-layer level.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## Phases
+Currently, two official plugins are available:
 
-1. – Core System (Complete)
-2. – Loyalty Points + Upgrade
-3. – Metadata & Asset Flexibility
-4. – Admin/API Layer
-5. – Collectible-as-a-Service (CaaS)
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
+## Expanding the ESLint configuration
 
-
-000000000000010
-0xabc123def4567890abc123def4567890abc123def4567890abc123def4567890
-0xf8f8269488f73fab3935555fcddd6035699dee25
-ipfs://QmVUtkyKPHZa6qSvTGNYotUMfPU56VRg1hzqFuUn9ZuLFH
-
-                                                                        
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.

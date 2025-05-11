@@ -209,6 +209,19 @@
     },
     {
         "inputs": [],
+        "name": "marketplaceAddress",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
         "name": "owner",
         "outputs": [
             {
@@ -277,6 +290,19 @@
             }
         ],
         "name": "setContractNFT",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_marketplaceAddress",
+                "type": "address"
+            }
+        ],
+        "name": "setMarketplaceAddress",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"

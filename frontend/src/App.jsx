@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
+import { Routes, Route, Link } from 'react-router-dom';
 import './App.css';
 
 // Components
-import Header from './components/Header';
-import ConnectWalletButton from './components/ConnectWalletButton';
-import CollectibleActions from './components/CollectibleActions';
-import CollectibleInfo from './components/CollectibleInfo';
-import RegisterCollectible from './components/RegisterCollectible';
+import Header from './components/Header.jsx';
+import ConnectWalletButton from './components/ConnectWalletButton.jsx';
+import CollectibleActions from './components/CollectibleActions.jsx';
+import CollectibleInfo from './components/CollectibleInfo.jsx';
+import RegisterCollectible from './components/RegisterCollectible.jsx';
+
+// Pages
+import MarketplacePage from './pages/MarketplacePage.jsx';
 
 // ABIs
 import contractABI from './contracts/CollectibleRegistry.json';
@@ -50,7 +54,7 @@ function App() {
         setWalletAddress(accounts[0]);
 
         const contract = new ethers.Contract(
-          process.env.REACT_APP_COLLECTIBLE_REGISTRY_ADDRESS,
+          import.meta.env.VITE_COLLECTIBLE_REGISTRY_ADDRESS,
           contractABI,
           provider
         );
@@ -83,14 +87,14 @@ function App() {
     try {
       const provider = new ethers.BrowserProvider(window.ethereum);
       const contract = new ethers.Contract(
-        process.env.REACT_APP_COLLECTIBLE_REGISTRY_ADDRESS,
+        import.meta.env.VITE_COLLECTIBLE_REGISTRY_ADDRESS,
         contractABI,
         provider
       );
       const [, , owner] = await contract.getCollectible(rfid);
       return owner;
     } catch (err) {
-      return null; // if not found, treat as unregistered
+      return null;
     }
   };
 
@@ -109,12 +113,12 @@ function App() {
       const userAddress = await signer.getAddress();
 
       const registry = new ethers.Contract(
-        process.env.REACT_APP_COLLECTIBLE_REGISTRY_ADDRESS,
+        import.meta.env.VITE_COLLECTIBLE_REGISTRY_ADDRESS,
         contractABI,
         signer
       );
       const nftContract = new ethers.Contract(
-        process.env.REACT_APP_COLLECTIBLE_NFT_ADDRESS,
+        import.meta.env.VITE_COLLECTIBLE_NFT_ADDRESS,
         nftABI,
         signer
       );
@@ -153,7 +157,7 @@ function App() {
     try {
       const provider = new ethers.BrowserProvider(window.ethereum);
       const contract = new ethers.Contract(
-        process.env.REACT_APP_COLLECTIBLE_REGISTRY_ADDRESS,
+        import.meta.env.VITE_COLLECTIBLE_REGISTRY_ADDRESS,
         contractABI,
         provider
       );
@@ -181,7 +185,7 @@ function App() {
       const userAddress = await signer.getAddress();
 
       const contract = new ethers.Contract(
-        process.env.REACT_APP_COLLECTIBLE_REGISTRY_ADDRESS,
+        import.meta.env.VITE_COLLECTIBLE_REGISTRY_ADDRESS,
         contractABI,
         signer
       );
@@ -222,7 +226,6 @@ function App() {
       return;
     }
 
-    // ✅ Check if RFID already registered
     const existingOwner = await getCollectibleOwner(registerRFID);
     if (existingOwner) {
       alert("❌ RFID already registered on-chain.");
@@ -237,7 +240,7 @@ function App() {
       const userAddress = await signer.getAddress();
 
       const contract = new ethers.Contract(
-        process.env.REACT_APP_COLLECTIBLE_REGISTRY_ADDRESS,
+        import.meta.env.VITE_COLLECTIBLE_REGISTRY_ADDRESS,
         contractABI,
         signer
       );
@@ -270,40 +273,54 @@ function App() {
   return (
     <div className="App">
       <Header />
+      <nav style={{ margin: '1rem' }}>
+        <Link to="/" style={{ marginRight: '1rem' }}>Home</Link>
+        <Link to="/marketplace">Marketplace</Link>
+      </nav>
       <main style={styles.main}>
-        <ConnectWalletButton walletAddress={walletAddress} onConnect={connectWallet} />
-        <CollectibleActions
-          rfid={rfid}
-          setRfid={setRfid}
-          newOwner={newOwner}
-          setNewOwner={setNewOwner}
-          onTransfer={handleTransferOwnership}
-          onCheck={handleCheckCollectible}
-          onRedeem={handleRedeemCollectible}
-          transferMessage={transferMessage}
-          transferLoading={transferLoading}
-          redeemMessage={redeemMessage}
-          redeemLoading={redeemLoading}
-        />
-        <CollectibleInfo collectibleInfo={collectibleInfo} walletAddress={walletAddress} />
-        {walletAddress && adminAddress &&
-          walletAddress.toLowerCase() === adminAddress.toLowerCase() && (
-            <RegisterCollectible
-              registerRFID={registerRFID}
-              setRegisterRFID={setRegisterRFID}
-              registerAuthHash={registerAuthHash}
-              setRegisterAuthHash={setRegisterAuthHash}
-              registerOwner={registerOwner}
-              setRegisterOwner={setRegisterOwner}
-              registerTokenURI={registerTokenURI}
-              setRegisterTokenURI={setRegisterTokenURI}
-              handleRegisterCollectible={handleRegisterCollectible}
-              isValidRFID={isValidRFID}
-              isValidEthereumAddress={isValidEthereumAddress}
-              isValidIPFSUri={isValidIPFSUri}
-              registerMessage={registerMessage}
-            />
-          )}
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <>
+                <ConnectWalletButton walletAddress={walletAddress} onConnect={connectWallet} />
+                <CollectibleActions
+                  rfid={rfid}
+                  setRfid={setRfid}
+                  newOwner={newOwner}
+                  setNewOwner={setNewOwner}
+                  onTransfer={handleTransferOwnership}
+                  onCheck={handleCheckCollectible}
+                  onRedeem={handleRedeemCollectible}
+                  transferMessage={transferMessage}
+                  transferLoading={transferLoading}
+                  redeemMessage={redeemMessage}
+                  redeemLoading={redeemLoading}
+                />
+                <CollectibleInfo collectibleInfo={collectibleInfo} walletAddress={walletAddress} />
+                {walletAddress && adminAddress &&
+                  walletAddress.toLowerCase() === adminAddress.toLowerCase() && (
+                    <RegisterCollectible
+                      registerRFID={registerRFID}
+                      setRegisterRFID={setRegisterRFID}
+                      registerAuthHash={registerAuthHash}
+                      setRegisterAuthHash={setRegisterAuthHash}
+                      registerOwner={registerOwner}
+                      setRegisterOwner={setRegisterOwner}
+                      registerTokenURI={registerTokenURI}
+                      setRegisterTokenURI={setRegisterTokenURI}
+                      handleRegisterCollectible={handleRegisterCollectible}
+                      isValidRFID={isValidRFID}
+                      isValidEthereumAddress={isValidEthereumAddress}
+                      isValidIPFSUri={isValidIPFSUri}
+                      registerMessage={registerMessage}
+                    />
+                  )}
+              </>
+            }
+          />
+          <Route path="/marketplace" element={<MarketplacePage />} />
+        </Routes>
       </main>
     </div>
   );

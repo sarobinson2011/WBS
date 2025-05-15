@@ -319,7 +319,15 @@ function App() {
               </>
             }
           />
-          <Route path="/marketplace" element={<MarketplacePage />} />
+          <Route
+            path="/marketplace"
+            element={
+              <MarketplacePage
+                walletAddress={walletAddress}
+                connectWallet={connectWallet}
+              />
+            }
+          />
         </Routes>
       </main>
     </div>
